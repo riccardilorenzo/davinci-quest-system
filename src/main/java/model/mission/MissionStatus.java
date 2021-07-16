@@ -12,6 +12,8 @@ public enum MissionStatus {
 
     @Override
     public String toString() {
-        return this.desc;
+        return "Missione " + this.desc.toLowerCase();
     }
+
+    public String getDesc() { return this.desc; }
 }

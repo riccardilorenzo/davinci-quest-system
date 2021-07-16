@@ -28,6 +28,7 @@ public class Commander {
 	 * @param realName "Real" GDR name, used for roleplay purposes.
 	 * @param attributes HashSet of Attribute, which stores the attributes of the commander.
 	 * @param points Points the Commander has.
+	 * @param missions A map containing, for each mission, its status (relative to the Commander).
 	 */
 	public Commander(String login, String commanderName, String realName,
 			Set<Attribute> attributes, int points, Map<Mission, MissionStatus> missions, boolean isAdmin) {
@@ -38,7 +39,7 @@ public class Commander {
 		this.commanderName = commanderName;
 		this.attributes = attributes;
 		this.points = points;
-		this.realName = Optional.of(realName);
+		this.realName = Optional.ofNullable(realName);
 		this.isAdmin = isAdmin;
 		this.missions = missions;
 	}
@@ -50,6 +51,7 @@ public class Commander {
 	 * @param attributes HashSet of Attribute, which stores the attributes of the commander.
 	 * @param points Points the Commander has.
 	 * @param isAdmin Whether this Commander has admin privileges or not.
+	 * @param missions A map containing, for each mission, its status (relative to the Commander).
 	 */
 	public Commander(String login, String commanderName, Set<Attribute> attributes,
 			int points, Map<Mission, MissionStatus> missions, boolean isAdmin) {
@@ -62,6 +64,7 @@ public class Commander {
 	 * @param commanderName Commander name as used in game.
 	 * @param attributes HashSet of Attribute, which stores the attributes of the commander.
 	 * @param points Points the Commander has.
+	 * @param missions A map containing, for each mission, its status (relative to the Commander).
 	 */
 	public Commander(String login, String commanderName, Set<Attribute> attributes,
 			int points, Map<Mission, MissionStatus> missions) {
@@ -150,8 +153,28 @@ public class Commander {
 		if (this.getPoints() + points < 0) throw new IllegalArgumentException("Non puoi togliere più punti a CMDR " + this.getCommanderName() + " di quanti ne possieda attualmente.");
 		this.setPoints(this.getPoints() + points);
 	}
-	
+
+	/**
+	 * Auxiliary method to check if this Commander has admin privileges.
+	 * @return True if this Commander has admin privileges, false otherwise.
+	 */
 	public boolean isAdmin() {
 		return this.isAdmin;
 	}
+
+	/**
+	 * Method which checks (and eventually accepts) the Mission provided for this Commander.
+	 * @param mission Mission object that has to be accepted.
+	 * @return True if the mission can be accepted (and accepts the mission), false otherwise.
+	 */
+	public boolean acceptMission(Mission mission) {
+		if (this.missions.containsKey(mission)) {
+			if (this.missions.get(mission).equals(MissionStatus.NOT_ACCEPTED)) {
+				this.missions.put(mission, MissionStatus.PENDING); return true;
+			}
+		}
+		return false;
+	}
+
+	// TODO: completeMission method (connection to remote DB made in a servlet)
 }
