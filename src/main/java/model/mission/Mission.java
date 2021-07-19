@@ -1,41 +1,52 @@
 package model.mission;
 
+import model.Attribute;
 import model.QuestException;
-import model.mission.requirement.Requirement;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.*;
 
+// TODO: rewrite the mission part on the DB to support the Step, Ending and other new functionalities
+
+/**
+ * This class provides a Mission, made of one or multiple steps, and multiple endings.
+ * @author TheMind
+ */
 public class Mission {
-    private int id, neededPoints, rewardPoints;
-    private String name, desc;
-    private Map<String, Integer> requirements;
-    private LocalDateTime issueDateTime;
-    private List<Requirement> requirementList;
+    private final int id;
+    private int neededPoints, rewardPoints;
+    private List<Step> steps;
+    private String name;
+    private SortedMap<Attribute, Integer> attributeRequirements;
+    private final LocalDateTime issueDateTime;
+    private Set<Ending> endings;
 
     /**
      * Main constructor for Mission.
      * @param id The Mission ID.
      * @param name The Mission name.
-     * @param desc The Mission GDR description.
+     * @param steps The Step(s) this mission has.
      * @param neededPoints The Mission needed points.
-     * @param requirements The Mission needed requirements, in terms of a name associated with its value.
+     * @param attributeRequirements The Mission needed requirements, in terms of a name associated with its value.
      * @param issueDateTime The Mission creation date and time.
-     * @param requirementList The List of the requirements for this Mission to be completed.
+     * @param endings A Set of final effects applied at the end of the Mission.
      */
-    public Mission(int id, String name, String desc, int neededPoints, int rewardPoints, Map<String, Integer> requirements,
-                   LocalDateTime issueDateTime, List<Requirement> requirementList) {
-        if (name == null || desc == null || requirements == null || issueDateTime == null || requirementList == null)
-            throw new QuestException("Null arguments for Mission constructor, aborting.");
+    public Mission(int id, String name, List<Step> steps, int neededPoints, int rewardPoints,
+                   SortedMap<Attribute, Integer> attributeRequirements, LocalDateTime issueDateTime, Set<Ending> endings) {
+        if (name == null || steps == null || attributeRequirements == null || issueDateTime == null || endings == null)
+            throw new IllegalArgumentException("Null arguments for Mission constructor, aborting.");
+        if (steps.size() == 0) throw new QuestException("La missione specificata non può avere 0 step.");
+
         this.id = id;
         this.name = name;
-        this.desc = desc;
+        this.steps = steps; Collections.sort(steps);
         this.neededPoints = neededPoints;
-        this.requirements = requirements;
+        this.rewardPoints = rewardPoints;
+        this.attributeRequirements = attributeRequirements;
         this.issueDateTime = issueDateTime;
-        this.requirementList = requirementList;
+        this.endings = endings;
     }
 
     /**
@@ -55,19 +66,19 @@ public class Mission {
     }
 
     /**
-     * Getter method for the description.
-     * @return The Mission description.
+     * Getter method for the List of Step(s) of this Mission.
+     * @return The Mission list of Step(s).
      */
-    public String getDesc() {
-        return desc;
+    public List<Step> getSteps() {
+        return steps;
     }
 
     /**
      * Getter method for the Attribute requirements.
      * @return The Mission Attribute requirements.
      */
-    public Map<String, Integer> getAttributeRequirements() {
-        return requirements;
+    public SortedMap<Attribute, Integer> getAttributeRequirements() {
+        return attributeRequirements;
     }
 
     /**
@@ -87,14 +98,6 @@ public class Mission {
     }
 
     /**
-     * Getter method for the List of fulfillment requirements.
-     * @return The List containing every requirement for the Mission.
-     */
-    public List<Requirement> getFulfillmentRequirements() {
-        return this.requirementList;
-    }
-
-    /**
      * Getter method for the reward points amount.
      * @return The amount of reward points.
      */
@@ -102,14 +105,42 @@ public class Mission {
         return this.rewardPoints;
     }
 
+    /**
+     * Getter method for the endings.
+     * @return The Set containing the endings of this Mission.
+     */
+    public Set<Ending> getEndings() {
+        return this.endings;
+    }
+
+    /**
+     * Adds an Ending to the Set of endings.
+     * @param e The Ending to be added.
+     * @return The Set of endings with the element eventually added.
+     */
+    public Set<Ending> addEnding(Ending e) {
+        if (e == null) throw new IllegalArgumentException("Ending null, aborting.");
+        this.endings.add(e); return this.endings;
+    }
+
+    /**
+     * Removes an Ending from the Set of endings.
+     * @param e The Ending to be removed.
+     * @return The Set of endings with the element eventually removed.
+     */
+    public Set<Ending> removeEnding(Ending e) {
+        if (e == null) throw new IllegalArgumentException("Ending null, aborting.");
+        this.endings.remove(e); return this.endings;
+    }
+
     @Override
     public String toString() {
         DateTimeFormatter dtf = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.LONG, FormatStyle.SHORT).withLocale(Locale.getDefault());
         return "Missione del " + dtf.format(this.getIssueDateTime()) + " - " + this.getName() + " - " + System.lineSeparator()
+                + "Numero di step: " + this.getSteps().size() + System.lineSeparator()
+                + "Numero di finali: " + this.getEndings().size() + System.lineSeparator()
                 + "Punti necessari: " + this.getNeededPoints() + " (ricompensa: " + this.getRewardPoints() + ")" + System.lineSeparator()
-                + "Requisiti (attributi):" + System.lineSeparator() + formatRequirements() + System.lineSeparator()
-                + "Requisiti (completamento):" + System.lineSeparator() + formatFinalRequirements() + System.lineSeparator()
-                + System.lineSeparator() + this.getDesc();
+                + "Requisiti (attributi):" + System.lineSeparator() + formatRequirements();
     }
 
     @Override
@@ -128,20 +159,77 @@ public class Mission {
     private String formatRequirements() {
         StringJoiner sj = new StringJoiner(System.lineSeparator());
 
-        for (String attr : this.getAttributeRequirements().keySet())
+        for (Attribute attr : this.getAttributeRequirements().keySet())
             sj.add("\t- " + attr + ": " + this.getAttributeRequirements().get(attr));
 
         return sj.toString();
     }
 
-    private String formatFinalRequirements() {
-        StringJoiner sj = new StringJoiner(System.lineSeparator());
-
-        for (Requirement req : this.getFulfillmentRequirements())
-            sj.add("\t- " + req.toString());
-
-        return sj.toString();
+    /**
+     * Setter method for the needed points.
+     * @param neededPoints The new needed points. Must be not negative.
+     */
+    public void setNeededPoints(int neededPoints) {
+        if (neededPoints < 0) throw new QuestException("I punti necessari per accettare la missione non possono essere negativi.");
+        this.neededPoints = neededPoints;
     }
 
-    // TODO: missing completion requirements (code them here or use a separate class Requirement). Write the method
+    /**
+     * Setter method for the reward points.
+     * @param rewardPoints The new reward points. Must be not negative.
+     */
+    public void setRewardPoints(int rewardPoints) {
+        if (rewardPoints < 0) throw new QuestException("I punti di ricompensa non possono essere negativi.");
+        this.rewardPoints = rewardPoints;
+    }
+
+    /**
+     * Setter method for the Mission name.
+     * @param name The new Mission name.
+     */
+    public void setName(String name) {
+        if (name == null) throw new IllegalArgumentException("Mission name null, aborting.");
+        this.name = name;
+    }
+
+    /**
+     * Auxiliary method for adding new steps into the Mission.
+     * @param step The Step to be added.
+     * @return The list of Step(s) with the new Step, ordered by ID.
+     */
+    public List<Step> addStep(Step step) {
+        this.steps.add(step); Collections.sort(this.steps);
+        return this.steps;
+    }
+
+    /**
+     * Auxiliary method for removing a step into the Mission.
+     * @param step The Step to be added.
+     * @return The list of Step(s) with the specified Step removed, ordered by ID.
+     */
+    public List<Step> removeStep(Step step) {
+        this.steps.remove(step); return this.steps;
+    }
+
+    /**
+     * Adds or changes an attribute requirement for this Mission.
+     * @param attribute The attribute to be added or edited.
+     * @param value The new value of the specified attribute.
+     * @return The Map of attributes, ordered by name.
+     */
+    public SortedMap<Attribute, Integer> addAttributeRequirement(Attribute attribute, int value) {
+        if (attribute == null) throw new IllegalArgumentException("Attribute null, aborting.");
+        if (value < 0) throw new QuestException("Il valore per l'attributo da inserire non può essere negativo.");
+        this.attributeRequirements.put(attribute, value); return this.attributeRequirements;
+    }
+
+    /**
+     * Removes an attribute from the requirements of this Mission.
+     * @param attribute The attribute to be removed from the requirements.
+     * @return The Map of attributes, ordered by name.
+     */
+    public SortedMap<Attribute, Integer> removeAttributeRequirement(Attribute attribute) {
+        if (attribute == null) throw new IllegalArgumentException("Attribute null, aborting.");
+        this.attributeRequirements.remove(attribute); return this.attributeRequirements;
+    }
 }

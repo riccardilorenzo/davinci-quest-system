@@ -1,16 +1,6 @@
 package model.mission.requirement;
 
-public class MarketRequirement implements Requirement {
-    private int amountToSell/*, amountSold*/;
-
-    public MarketRequirement(int amountToSell/*, int amountSold*/) {
-        this.amountToSell = amountToSell;
-        //this.amountSold = amountSold;
-    }
-
-    /*public void setAmountSold(int amountSold) {
-        this.amountSold = amountSold;
-    }*/
+public record MarketRequirement(int amountToSell) implements Requirement {
 
     /**
      * @see Requirement#isMet(Object other)

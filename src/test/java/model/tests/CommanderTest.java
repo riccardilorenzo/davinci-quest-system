@@ -1,10 +1,10 @@
 package model.tests;
 
+import model.Attribute;
 import model.Commander;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -16,10 +16,10 @@ class CommanderTest {
     @BeforeEach
     void setUp() {
         cmdr = new Commander("LOGIN", "TheMind", Map.of(
-                "Intelligenza", 5,
-                "Carisma", 5,
-                "Agilità", 3
-        ), 10, new HashMap<>());
+                Attribute.AGILITY, 5,
+                Attribute.CHARISMA, 5,
+                Attribute.INTELLIGENCE, 3
+        ), 10);
     }
 
     @Test

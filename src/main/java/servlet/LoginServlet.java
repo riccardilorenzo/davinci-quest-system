@@ -6,15 +6,12 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import model.Attribute;
 import model.Commander;
-import model.mission.Mission;
-import model.mission.MissionStatus;
 
 import java.io.IOException;
 import java.io.Serial;
 import java.sql.*;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.TreeMap;
 
 /**
@@ -36,7 +33,7 @@ public class LoginServlet extends HttpServlet {
 		if (session != null) session.invalidate();
 		session = request.getSession(true);
 
-		//Find user
+		// Find user
 		Connection conn;
 		PreparedStatement ps;
 		try {
@@ -48,7 +45,6 @@ public class LoginServlet extends HttpServlet {
 			int rowCount = rs.last() ? rs.getRow() : 0;
 
 			if (rowCount == 1) {
-				//getServletContext().getRequestDispatcher("/home.jsp").forward(request, response);
 				String name = rs.getString("name"), realName = rs.getString("realname");
 				boolean isAdmin = rs.getBoolean("admin");
 				int points = rs.getInt("points");
@@ -57,16 +53,13 @@ public class LoginServlet extends HttpServlet {
 				ps = conn.prepareStatement("SELECT * FROM quest_attributes WHERE id = ?;");
 				ps.setString(1, login);
 				rs = ps.executeQuery();
-				TreeMap<String, Integer> attrs = new TreeMap<>();
+				TreeMap<Attribute, Integer> attrs = new TreeMap<>();
 				while (rs.next()) {
-					attrs.put(rs.getString("attribute"), rs.getInt("value"));
+					attrs.put(Attribute.valueOf(rs.getString("attribute")), rs.getInt("value"));
 				}
 				ps.close();
 
-				// TODO: missing part on missions retrieval (JOIN clause). If a mission is not accepted, decide whether to set it to NOT_ACCEPTED or not include it
-				Map<Mission, MissionStatus> missions = new HashMap<>();
-
-				session.setAttribute("commander", new Commander(login, name, realName, attrs, points, missions, isAdmin));
+				session.setAttribute("commander", new Commander(login, name, realName, attrs, points, isAdmin));
 				response.sendRedirect("home.jsp");
 			} else {
 				// User not found
@@ -80,4 +73,4 @@ public class LoginServlet extends HttpServlet {
 	}
 }
 
-// TODO: edit remote DB (must be equal to local one) and edit Lisa (/idquest)
+// TODO: create a remote DB (dumping then importing the local one) and edit Lisa (/idquest)
