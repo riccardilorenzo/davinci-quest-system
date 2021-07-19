@@ -2,7 +2,7 @@ package model.mission;
 
 public enum MissionStatus {
     SUCCESS("Completata"), FAILURE("Fallita"),
-    PENDING("In svolgimento"), NOT_ACCEPTED("Da completare");
+    PENDING("In svolgimento"), NOT_ACCEPTED("Da accettare");
 
     private String desc;
 

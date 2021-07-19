@@ -22,7 +22,7 @@ public interface Attribute {
 				"Agility", new Agility(value),
 				"Charisma", new Charisma(value),
 				"Intelligence", new Intelligence(value));
-		if (attributes.containsKey(name.toLowerCase())) return attributes.get(name);
+		if (attributes.containsKey(name)) return attributes.get(name);
 		else throw new AttributeNotValidException("Impossibile ottenere l'attributo specificato.");
 	}
 	
@@ -37,17 +37,11 @@ public interface Attribute {
 	 * @return A String representing which Attribute the object is.
 	 */
 	String getName();
-	
+
 	/**
-	 * 
-	 * @param obj Another Attribute to compare with.
-	 * @return True if both the objects are instances of the same class, and have the same value.
+	 * Compares two Attributes and checks if this Attribute is upper or equal to other Attribute.
+	 * @param other The other Attribute to be compared. Must be of the same type as the caller.
+	 * @return True if this Attribute has a major or equal value to the other Attribute, false otherwise.
 	 */
-	boolean equals(Object obj);
-	
-	/**
-	 * toString() overriding. Might coincide with getName() method.
-	 * @return A String representing the Attribute the object is. Might coincide with getName().
-	 */
-	String toString();
+	boolean satisfies(Attribute other);
 }

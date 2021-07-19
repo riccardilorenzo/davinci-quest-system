@@ -31,6 +31,17 @@ public class Intelligence implements Attribute, Comparable<Intelligence> {
 		return false;
 	}
 
+	/**
+	 * @see Attribute#satisfies(Attribute)
+	 */
+	@Override
+	public boolean satisfies(Attribute other) {
+		if (other instanceof Intelligence in) {
+			return this.getValue() >= in.getValue();
+		}
+		return false;
+	}
+
 	@Override
 	public int compareTo(Intelligence o) {
 		return this.getValue() - o.getValue();
@@ -38,6 +49,6 @@ public class Intelligence implements Attribute, Comparable<Intelligence> {
 	
 	@Override
 	public String toString() {
-		return this.getName();
+		return this.getName() + ": " + this.getValue();
 	}
 }

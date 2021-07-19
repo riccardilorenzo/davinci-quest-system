@@ -1,12 +1,11 @@
 package model;
 
-import model.attribute.Attribute;
 import model.mission.Mission;
 import model.mission.MissionStatus;
+import model.mission.requirement.Requirement;
 
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 
 /**
  * This class is used to instantiate a Commander, which is used as a basic user model.
@@ -16,7 +15,7 @@ import java.util.Set;
 public class Commander {
 	private String login, commanderName;
 	private Optional<String> realName;
-	private Set<Attribute> attributes;
+	private Map<String, Integer> attributes; // TODO: (MAYBE) reimplement this as a Set (or, more efficiently, a Map) of <Attribute> (or <Attribute, Attribute>)
 	private int points;
 	private boolean isAdmin;
 	private Map<Mission, MissionStatus> missions;
@@ -31,7 +30,7 @@ public class Commander {
 	 * @param missions A map containing, for each mission, its status (relative to the Commander).
 	 */
 	public Commander(String login, String commanderName, String realName,
-			Set<Attribute> attributes, int points, Map<Mission, MissionStatus> missions, boolean isAdmin) {
+			Map<String, Integer> attributes, int points, Map<Mission, MissionStatus> missions, boolean isAdmin) {
 		if (login == null || commanderName == null || attributes == null || missions == null)
 			throw new IllegalArgumentException("Argomenti null, impossibile proseguire.");
 		
@@ -53,7 +52,7 @@ public class Commander {
 	 * @param isAdmin Whether this Commander has admin privileges or not.
 	 * @param missions A map containing, for each mission, its status (relative to the Commander).
 	 */
-	public Commander(String login, String commanderName, Set<Attribute> attributes,
+	public Commander(String login, String commanderName, Map<String, Integer> attributes,
 			int points, Map<Mission, MissionStatus> missions, boolean isAdmin) {
 		this(login, commanderName, commanderName, attributes, points, missions, isAdmin);
 	}
@@ -66,7 +65,7 @@ public class Commander {
 	 * @param points Points the Commander has.
 	 * @param missions A map containing, for each mission, its status (relative to the Commander).
 	 */
-	public Commander(String login, String commanderName, Set<Attribute> attributes,
+	public Commander(String login, String commanderName, Map<String, Integer> attributes,
 			int points, Map<Mission, MissionStatus> missions) {
 		this(login, commanderName, commanderName, attributes, points, missions, false);
 	}
@@ -115,7 +114,7 @@ public class Commander {
 	 * Getter method for the attributes.
 	 * @return An HashSet containing all the Attribute(s) of the Commander.
 	 */
-	public Set<Attribute> getAttributes() {
+	public Map<String, Integer> getAttributes() {
 		return attributes;
 	}
 
@@ -123,7 +122,7 @@ public class Commander {
 	 * Setter method for the attributes.
 	 * @param attributes An HashSet containing the attributes of the commander.
 	 */
-	public void setAttributes(Set<Attribute> attributes) {
+	public void setAttributes(Map<String, Integer> attributes) {
 		if (attributes == null) throw new IllegalArgumentException("Attributes for the Commander cannot be null.");
 		this.attributes = attributes;
 	}
@@ -163,18 +162,69 @@ public class Commander {
 	}
 
 	/**
+	 * Getter method for the Map of the missions the current Commander currently has accepted.
+	 * @return A Map containing the Mission(s) as keys and their relative MissionStatus as values.
+	 */
+	public Map<Mission, MissionStatus> getMissions() {
+		return this.missions;
+	}
+
+	// TODO: implement tests on acceptMission() method
+	/**
 	 * Method which checks (and eventually accepts) the Mission provided for this Commander.
 	 * @param mission Mission object that has to be accepted.
 	 * @return True if the mission can be accepted (and accepts the mission), false otherwise.
 	 */
 	public boolean acceptMission(Mission mission) {
-		if (this.missions.containsKey(mission)) {
-			if (this.missions.get(mission).equals(MissionStatus.NOT_ACCEPTED)) {
-				this.missions.put(mission, MissionStatus.PENDING); return true;
+		if (mission == null) throw new IllegalArgumentException("Null Mission in acceptMission() method, aborting.");
+		if (this.getPoints() >= mission.getNeededPoints()) {
+			if (checkAttributes(mission)) {
+				if (!this.getMissions().containsKey(mission) || this.getMissions().get(mission).equals(MissionStatus.NOT_ACCEPTED)) {
+					this.addPoints(-mission.getNeededPoints());
+					this.missions.put(mission, MissionStatus.PENDING);
+				}
 			}
 		}
 		return false;
 	}
 
+	private boolean checkAttributes(Mission mission) {
+		for (String attr : mission.getAttributeRequirements().keySet()) {
+			if (this.getAttributes().containsKey(attr)) {
+				if (this.getAttributes().get(attr) < mission.getAttributeRequirements().get(attr))
+					return false;
+			} else return false;
+		}
+		return true;
+	}
+
+	/**
+	 *
+	 * @param mission The Mission to be completed.
+	 * @param values The current situation which has to be compared to the mission.
+	 * @return True if the mission can be completed (and becomes so), false otherwise.
+	 */
 	// TODO: completeMission method (connection to remote DB made in a servlet)
+	// ERROR: ONLY ONE VALUE FOR MULTIPLE CONDITIONS (SEE BELOW METHOD meetsRequirements()). TO BE REIMPLEMENTED
+	// PS: edited with a Map, but MUST be thought well
+	public boolean completeMission(Mission mission,  Map<Requirement, Object> values) {
+		if (this.getMissions().containsKey(mission)) {
+			if (this.getMissions().get(mission).equals(MissionStatus.PENDING)) {
+				if (meetsRequirements(mission, values)) {
+					this.getMissions().put(mission, MissionStatus.SUCCESS);
+					this.addPoints(mission.getRewardPoints());
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	private boolean meetsRequirements(Mission mission, Map<Requirement, Object> values) {
+		if (mission.getFulfillmentRequirements().size() != values.keySet().size()) return false;
+		for (Requirement req : mission.getFulfillmentRequirements()) {
+			if (!req.isMet(values.get(req))) return false;
+		}
+		return true;
+	}
 }

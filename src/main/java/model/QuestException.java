@@ -6,9 +6,7 @@ public class QuestException extends RuntimeException {
 	@Serial
 	private static final long serialVersionUID = 1L;
 	
-	public QuestException() {
-		
-	}
+	public QuestException() { }
 
 	public QuestException(String message) {
 		super(message);

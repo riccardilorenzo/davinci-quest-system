@@ -1,14 +1,11 @@
 package model.tests;
 
 import model.Commander;
-import model.attribute.Agility;
-import model.attribute.Charisma;
-import model.attribute.Intelligence;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
-import java.util.Set;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -18,8 +15,10 @@ class CommanderTest {
 
     @BeforeEach
     void setUp() {
-        cmdr = new Commander("LOGIN", "TheMind", Set.of(
-                new Intelligence(5), new Charisma(3), new Agility(3)
+        cmdr = new Commander("LOGIN", "TheMind", Map.of(
+                "Intelligenza", 5,
+                "Carisma", 5,
+                "Agilità", 3
         ), 10, new HashMap<>());
     }
 

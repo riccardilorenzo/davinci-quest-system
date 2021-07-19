@@ -1,3 +1,5 @@
+<%@ page import="jakarta.servlet.http.HttpSession" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <!DOCTYPE html>
 <html>
@@ -13,7 +15,7 @@
             <h1 class="display-4 text-center">Benvenuto nel sistema quest DaVinci!</h1>
         </div>
         <div class="row">
-                <form method="POST" action="LoginUser">
+                <form method="POST" action="home">
                     <div class="mb-3">
                         <input type="text" class="form-control" name="login" placeholder="Inserisci il tuo ID" maxlength="14" required>
                     </div>
@@ -22,6 +24,19 @@
                     </div>
                 </form>
         </div>
+
+        <c:if test="${ sessionScope.error != null }">
+            <div class="row">
+                <div class="col d-flex justify-content-center">
+                    <div class="alert alert-danger mt-5">
+                        ${ sessionScope.error }
+                        <c:remove var="error" scope="session" />
+                        <% HttpSession sess = request.getSession(false);
+                            if (sess != null) sess.invalidate(); %>
+                    </div>
+                </div>
+            </div>
+        </c:if>
         <div class="row mt-auto mb-3">
             <figure class="text-center">
                 <blockquote class="blockquote">

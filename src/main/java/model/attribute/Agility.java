@@ -22,7 +22,18 @@ public class Agility implements Attribute, Comparable<Agility> {
 	public String getName() {
 		return "Agilità";
 	}
-	
+
+	/**
+	 * @see Attribute#satisfies(Attribute)
+	 */
+	@Override
+	public boolean satisfies(Attribute other) {
+		if (other instanceof Agility ag) {
+			return this.getValue() >= ag.getValue();
+		}
+		return false;
+	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (obj instanceof Agility in) {
@@ -38,6 +49,6 @@ public class Agility implements Attribute, Comparable<Agility> {
 	
 	@Override
 	public String toString() {
-		return this.getName();
+		return this.getName() + ": " + this.getValue();
 	}
 }

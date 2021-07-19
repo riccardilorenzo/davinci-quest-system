@@ -31,6 +31,17 @@ public class Charisma implements Attribute, Comparable<Charisma> {
 		return false;
 	}
 
+	/**
+	 * @see Attribute#satisfies(Attribute)
+	 */
+	@Override
+	public boolean satisfies(Attribute other) {
+		if (other instanceof Charisma ch) {
+			return this.getValue() >= ch.getValue();
+		}
+		return false;
+	}
+
 	@Override
 	public int compareTo(Charisma o) {
 		return this.getValue() - o.getValue();
@@ -38,6 +49,6 @@ public class Charisma implements Attribute, Comparable<Charisma> {
 	
 	@Override
 	public String toString() {
-		return this.getName();
+		return this.getName() + ": " + this.getValue();
 	}
 }
