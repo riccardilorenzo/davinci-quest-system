@@ -1,6 +1,7 @@
 package model;
 
 import java.util.Map;
+import java.util.StringJoiner;
 
 // TODO: rewrite the commander-related tables in the DB to match this structure
 
@@ -114,8 +115,8 @@ public class Commander {
 	 * @param value The value of the attribute.
 	 */
 	public void setAttribute(Attribute attribute, int value) {
-		if (attribute == null) throw new IllegalArgumentException("Attribute String null, aborting.");
-		if (value < 0) throw new QuestException("Impossibile impostare un valore negativo ad un attributo.");
+		if (attribute == null) throw new IllegalArgumentException("Attribute null, aborting.");
+		if (value < 0) this.attributes.put(attribute, 0);
 		this.attributes.put(attribute, value);
 	}
 
@@ -151,5 +152,21 @@ public class Commander {
 	 */
 	public boolean isAdmin() {
 		return this.isAdmin;
+	}
+
+	@Override
+	public String toString() {
+		return "CMDR " + this.getCommanderName() + " (alias " + this.getRealName() + ")" + System.lineSeparator()
+				+ "Punteggio: " + this.getPoints() + " DaVinci Quest Points" + System.lineSeparator()
+				+ "Attributi:" + System.lineSeparator() + "\t-" + printAttributes();
+	}
+
+	private String printAttributes() {
+		StringJoiner sj = new StringJoiner(System.lineSeparator() + "\t-");
+
+		for (Attribute attr : this.getAttributes().keySet())
+			sj.add(attr + ": " + this.getAttributes().get(attr));
+
+		return sj.toString();
 	}
 }

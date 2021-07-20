@@ -41,7 +41,7 @@ public class Mission {
 
         this.id = id;
         this.name = name;
-        this.steps = steps; Collections.sort(steps);
+        this.steps = steps;
         this.neededPoints = neededPoints;
         this.rewardPoints = rewardPoints;
         this.attributeRequirements = attributeRequirements;
@@ -195,20 +195,29 @@ public class Mission {
     /**
      * Auxiliary method for adding new steps into the Mission.
      * @param step The Step to be added.
-     * @return The list of Step(s) with the new Step, ordered by ID.
+     * @return The list of Step(s) with the new Step added.
      */
     public List<Step> addStep(Step step) {
-        this.steps.add(step); Collections.sort(this.steps);
+        this.steps.add(step);
         return this.steps;
     }
 
     /**
      * Auxiliary method for removing a step into the Mission.
-     * @param step The Step to be added.
-     * @return The list of Step(s) with the specified Step removed, ordered by ID.
+     * @param step The Step to be removed.
+     * @return The list of Step(s) with the specified Step removed.
      */
     public List<Step> removeStep(Step step) {
         this.steps.remove(step); return this.steps;
+    }
+
+    /**
+     * Auxiliary method for removing a step into the Mission.
+     * @param index The index of the Step to be removed..
+     * @return The list of Step(s) with the specified Step removed.
+     */
+    public List<Step> removeStep(int index) {
+        this.steps.remove(index); return this.steps;
     }
 
     /**

@@ -17,7 +17,7 @@ import java.util.TreeMap;
 /**
  * Servlet implementation class LoginServlet
  */
-@WebServlet(description = "Servlet used for logging in users.", urlPatterns = { "/home" })
+@WebServlet(description = "Servlet used for logging in users.", urlPatterns = { "/LoginUser" })
 public class LoginServlet extends HttpServlet {
 	@Serial
 	private static final long serialVersionUID = 1L;
@@ -60,7 +60,7 @@ public class LoginServlet extends HttpServlet {
 				ps.close();
 
 				session.setAttribute("commander", new Commander(login, name, realName, attrs, points, isAdmin));
-				response.sendRedirect("home.jsp");
+				response.sendRedirect("home/home.jsp");
 			} else {
 				// User not found
 				session.setAttribute("error", "Utente non trovato, per favore ritenta (od ottieni il tuo codice da Lisa).");

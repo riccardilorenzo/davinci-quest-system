@@ -4,31 +4,20 @@ import model.QuestException;
 import model.mission.requirement.Requirement;
 
 import java.util.List;
-import java.util.Objects;
 
-public class Step implements Comparable<Step> {
-    private final int index, idMission;
+public class Step {
+    private final int idMission;
     private String desc;
     @SuppressWarnings("FieldMayBeFinal")
     private List<Requirement> requirements;
 
-    public Step(int index, int idMission, String desc, List<Requirement> requirements) {
-        if (index < 0) throw new QuestException("L'indice dello Step deve essere maggiore o uguale a 0.");
+    public Step(int idMission, String desc, List<Requirement> requirements) {
         if (desc == null || requirements == null) throw new IllegalArgumentException("Description null, aborting.");
         if (requirements.size() == 0) throw new QuestException("Lo step specificato deve avere almeno un requisito per il completamento.");
 
-        this.index = index;
         this.desc = desc;
         this.requirements = requirements;
         this.idMission = idMission;
-    }
-
-    /**
-     * Getter method for the Step index.
-     * @return The Step index.
-     */
-    public int getIndex() {
-        return index;
     }
 
     /**
@@ -80,23 +69,5 @@ public class Step implements Comparable<Step> {
      */
     public List<Requirement> removeRequirement(Requirement req) {
         this.requirements.remove(req); return this.requirements;
-    }
-
-    @Override
-    public int compareTo(Step o) {
-        return this.index - o.index;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Step step = (Step) o;
-        return getIndex() == step.getIndex() && getIdMission() == step.getIdMission();
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getIndex(), getIdMission());
     }
 }

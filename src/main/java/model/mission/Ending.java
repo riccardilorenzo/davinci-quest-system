@@ -6,6 +6,10 @@ import java.util.Objects;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+/**
+ * This class represents an ending for one or more quests, each with a (eventually empty or maybe negative) reward.
+ * @author TheMind
+ */
 public class Ending {
     private final int id;
     private String text;
@@ -17,7 +21,7 @@ public class Ending {
      * @param text The GDR text of this ending.
      * @param rewards The rewards (extra attribute points) of this ending.
      */
-    public Ending(int id, String text, SortedMap<Attribute, Integer> rewards) {;
+    public Ending(int id, String text, SortedMap<Attribute, Integer> rewards) {
         if (text == null || rewards == null)
             throw new IllegalArgumentException("Parameters null in Ending constructor, aborting.");
 

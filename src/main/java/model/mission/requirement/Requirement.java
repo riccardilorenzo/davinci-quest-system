@@ -9,8 +9,8 @@ public interface Requirement {
 
     /**
      * Checks whether the requirement is fulfilled with the given value.
-     * @param status The value which should satisfy the requirement.
+     * @param status The value which should satisfy the requirement. The String must be JSON parsable.
      * @return True if the requirement is fulfilled, false otherwise.
      */
-    boolean isMet(Object status);
+    boolean isMet(String status);
 }

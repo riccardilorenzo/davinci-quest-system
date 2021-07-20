@@ -15,7 +15,7 @@
             <h1 class="display-4 text-center">Benvenuto nel sistema quest DaVinci!</h1>
         </div>
         <div class="row">
-                <form method="POST" action="home">
+                <form method="POST" action="LoginUser">
                     <div class="mb-3">
                         <input type="text" class="form-control" name="login" placeholder="Inserisci il tuo ID" maxlength="14" required>
                     </div>

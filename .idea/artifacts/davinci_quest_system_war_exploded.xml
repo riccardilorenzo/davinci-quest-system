@@ -21,6 +21,7 @@
           <element id="library" level="project" name="Maven: com.sun.activation:jakarta.activation:2.0.0" />
           <element id="library" level="project" name="Maven: org.postgresql:postgresql:42.2.23" />
           <element id="library" level="project" name="Maven: org.checkerframework:checker-qual:3.5.0" />
+          <element id="library" level="project" name="Maven: org.json:json:20210307" />
         </element>
       </element>
       <element id="directory" name="META-INF">
