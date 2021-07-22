@@ -90,6 +90,7 @@ public class MissionCommanderController {
 
         // TODO: !!! status is only one for multiple, different, requirements: rethink this or use only one requirement for step
         for (Requirement req : m.getSteps().get(stepIndex).getRequirements()) {
+            // TODO: rethink the status object, as if made so, it would require one delivery only (one JSON object contains only one IG mission -> maybe concat?)
             if (!req.isMet(status))
                 return new Outcome(false, "Non soddisfi il seguente requisito per il completamento dello Step: " + System.lineSeparator() + req);
         }
