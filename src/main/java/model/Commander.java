@@ -130,19 +130,18 @@ public class Commander {
 
 	/**
 	 * Setter method for the points.
-	 * @param points The points of the Commander, given as int. Cannot be negative.
+	 * @param points The points of the Commander, given as int. If negative, the points are set to 0.
 	 */
 	public void setPoints(int points) {
-		if (points < 0) throw new QuestException("Non puoi impostare ad un valore negativo i punti di CMDR " + this.getCommanderName());
+		if (points < 0) this.points = 0;
 		this.points = points;
 	}
 	
 	/**
 	 * Utility method for adjusting the points of the Commander.
-	 * @param points Points to be added or subtracted. Cannot result in the Commander having a negative amount of points.
+	 * @param points Points to be added or subtracted. If the Commander would have a negative amount of points, they become 0.
 	 */
 	public void addPoints(int points) {
-		if (this.getPoints() + points < 0) throw new QuestException("Non puoi togliere più punti a CMDR " + this.getCommanderName() + " di quanti ne possieda attualmente.");
 		this.setPoints(this.getPoints() + points);
 	}
 

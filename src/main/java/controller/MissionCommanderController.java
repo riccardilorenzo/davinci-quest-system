@@ -151,4 +151,18 @@ public class MissionCommanderController {
         return "Hai completato con successo la missione, complimenti!" + System.lineSeparator()
                 + "Inoltre, hai guadagnato " + m.getRewardPoints() + " punti!" + sj;
     }
+
+    /**
+     * Reads the MissionStatus relative to the given Commander and Mission.
+     * @param cmdr The Commander.
+     * @param m The Mission.
+     * @return The read MissionStatus. MissionStatus.NOT_ACCEPTED if not found.
+     */
+    public MissionStatus readMissionStatus(Commander cmdr, Mission m) {
+        try {
+            return reader.readMissionStatus(cmdr, m);
+        } catch (BadDataFormatException e) {
+            throw new QuestException("Si è verificato un errore durante la lettura dello stato di una missione, contatta un Amministratore.");
+        }
+    }
 }

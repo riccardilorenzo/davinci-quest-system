@@ -6,10 +6,13 @@ package model;
  * @author TheMind
  */
 public enum Attribute {
-    AGILITY("Agilità"), CHARISMA("Carisma"), CONTACTS("Conoscenze"),
+    AGILITY("Agilità"), CHARISMA("Carisma"), CONTACTS("Contatti"),
     FAME("Fama"), INTELLIGENCE("Intelligenza");
 
-    private String name;
+    private final String name;
 
     private Attribute(String name) { this.name = name; }
+
+    @Override
+    public String toString() { return this.name; }
 }

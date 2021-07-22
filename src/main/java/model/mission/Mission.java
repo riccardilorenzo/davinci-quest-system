@@ -14,14 +14,14 @@ import java.util.*;
  * This class provides a Mission, made of one or multiple steps, and multiple endings.
  * @author TheMind
  */
-public class Mission {
+public class Mission implements Comparable<Mission> {
     private final int id;
     private int neededPoints, rewardPoints;
     private List<Step> steps;
     private String name;
     private SortedMap<Attribute, Integer> attributeRequirements;
     private final LocalDateTime issueDateTime;
-    private Set<Ending> endings;
+    private SortedSet<Ending> endings;
 
     /**
      * Main constructor for Mission.
@@ -34,7 +34,7 @@ public class Mission {
      * @param endings A Set of final effects applied at the end of the Mission.
      */
     public Mission(int id, String name, List<Step> steps, int neededPoints, int rewardPoints,
-                   SortedMap<Attribute, Integer> attributeRequirements, LocalDateTime issueDateTime, Set<Ending> endings) {
+                   SortedMap<Attribute, Integer> attributeRequirements, LocalDateTime issueDateTime, SortedSet<Ending> endings) {
         if (name == null || steps == null || attributeRequirements == null || issueDateTime == null || endings == null)
             throw new IllegalArgumentException("Null arguments for Mission constructor, aborting.");
         if (steps.size() == 0) throw new QuestException("La missione specificata non può avere 0 step.");
@@ -116,21 +116,21 @@ public class Mission {
     /**
      * Adds an Ending to the Set of endings.
      * @param e The Ending to be added.
-     * @return The Set of endings with the element eventually added.
+     * @return This Mission (supports pattern cascading).
      */
-    public Set<Ending> addEnding(Ending e) {
+    public Mission addEnding(Ending e) {
         if (e == null) throw new IllegalArgumentException("Ending null, aborting.");
-        this.endings.add(e); return this.endings;
+        this.endings.add(e); return this;
     }
 
     /**
      * Removes an Ending from the Set of endings.
      * @param e The Ending to be removed.
-     * @return The Set of endings with the element eventually removed.
+     * @return This Mission (supports pattern cascading).
      */
-    public Set<Ending> removeEnding(Ending e) {
+    public Mission removeEnding(Ending e) {
         if (e == null) throw new IllegalArgumentException("Ending null, aborting.");
-        this.endings.remove(e); return this.endings;
+        this.endings.remove(e); return this;
     }
 
     @Override
@@ -195,50 +195,60 @@ public class Mission {
     /**
      * Auxiliary method for adding new steps into the Mission.
      * @param step The Step to be added.
-     * @return The list of Step(s) with the new Step added.
+     * @return This Mission (supports pattern cascading).
      */
-    public List<Step> addStep(Step step) {
+    public Mission addStep(Step step) {
         this.steps.add(step);
-        return this.steps;
+        return this;
     }
 
     /**
      * Auxiliary method for removing a step into the Mission.
      * @param step The Step to be removed.
-     * @return The list of Step(s) with the specified Step removed.
+     * @return This Mission (supports pattern cascading).
      */
-    public List<Step> removeStep(Step step) {
-        this.steps.remove(step); return this.steps;
+    public Mission removeStep(Step step) {
+        this.steps.remove(step); return this;
     }
 
     /**
      * Auxiliary method for removing a step into the Mission.
      * @param index The index of the Step to be removed..
-     * @return The list of Step(s) with the specified Step removed.
+     * @return This Mission (supports pattern cascading).
      */
-    public List<Step> removeStep(int index) {
-        this.steps.remove(index); return this.steps;
+    public Mission removeStep(int index) {
+        this.steps.remove(index); return this;
     }
 
     /**
      * Adds or changes an attribute requirement for this Mission.
      * @param attribute The attribute to be added or edited.
      * @param value The new value of the specified attribute.
-     * @return The Map of attributes, ordered by name.
+     * @return This Mission (supports pattern cascading).
      */
-    public SortedMap<Attribute, Integer> addAttributeRequirement(Attribute attribute, int value) {
+    public Mission addAttributeRequirement(Attribute attribute, int value) {
         if (attribute == null) throw new IllegalArgumentException("Attribute null, aborting.");
         if (value < 0) throw new QuestException("Il valore per l'attributo da inserire non può essere negativo.");
-        this.attributeRequirements.put(attribute, value); return this.attributeRequirements;
+        this.attributeRequirements.put(attribute, value); return this;
     }
 
     /**
      * Removes an attribute from the requirements of this Mission.
      * @param attribute The attribute to be removed from the requirements.
-     * @return The Map of attributes, ordered by name.
+     * @return This Mission (supports pattern cascading).
      */
-    public SortedMap<Attribute, Integer> removeAttributeRequirement(Attribute attribute) {
+    public Mission removeAttributeRequirement(Attribute attribute) {
         if (attribute == null) throw new IllegalArgumentException("Attribute null, aborting.");
-        this.attributeRequirements.remove(attribute); return this.attributeRequirements;
+        this.attributeRequirements.remove(attribute); return this;
+    }
+
+    /**
+     * Compares this object with the specified object for order.  Returns a
+     * negative integer, zero, or a positive integer as this object is less
+     * than, equal to, or greater than the specified object.
+     */
+    @Override
+    public int compareTo(Mission o) {
+        return this.id - o.id;
     }
 }

@@ -6,7 +6,7 @@ import model.mission.Mission;
 import model.mission.MissionStatus;
 import model.mission.Step;
 
-import java.util.Set;
+import java.util.SortedSet;
 
 public interface Reader {
 
@@ -32,7 +32,7 @@ public interface Reader {
      * @return A Set containing all the Mission(s) of this Commander (NOT INCLUDING THOSE UNACCEPTED).
      * @throws BadDataFormatException In case of errors in I/O, or bad data format.
      */
-    Set<Mission> readMissionsOf(Commander cmdr) throws BadDataFormatException;
+    SortedSet<Mission> readMissionsOf(Commander cmdr) throws BadDataFormatException;
 
     /**
      * Reads a MissionStatus related to the given Mission and Commander, from the specified source.
@@ -66,7 +66,7 @@ public interface Reader {
      * @return The Set containing every possible ending.
      * @throws BadDataFormatException In case of errors in I/O, or bad data format.
      */
-    Set<Ending> readEndings() throws BadDataFormatException;
+    SortedSet<Ending> readEndings() throws BadDataFormatException;
 
     /**
      * Reads a specified Ending from the provided source.
@@ -74,7 +74,7 @@ public interface Reader {
      * @return The Ending read.
      * @throws BadDataFormatException In case of errors in I/O, or bad data format.
      */
-    Ending readEndings(int id) throws BadDataFormatException;
+    Ending readEnding(int id) throws BadDataFormatException;
 
     /**
      * Closes every stream the object has opened.

@@ -10,7 +10,7 @@ import java.util.TreeMap;
  * This class represents an ending for one or more quests, each with a (eventually empty or maybe negative) reward.
  * @author TheMind
  */
-public class Ending {
+public class Ending implements Comparable<Ending> {
     private final int id;
     private String text;
     private SortedMap<Attribute, Integer> rewards;
@@ -103,5 +103,10 @@ public class Ending {
     @Override
     public int hashCode() {
         return Objects.hash(getId());
+    }
+
+    @Override
+    public int compareTo(Ending o) {
+        return this.getId() - o.getId();
     }
 }
