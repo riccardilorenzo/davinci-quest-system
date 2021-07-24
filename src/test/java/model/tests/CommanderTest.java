@@ -5,7 +5,7 @@ import model.Commander;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.Map;
+import java.util.TreeMap;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -15,11 +15,9 @@ class CommanderTest {
 
     @BeforeEach
     void setUp() {
-        cmdr = new Commander("LOGIN", "TheMind", Map.of(
-                Attribute.AGILITY, 5,
-                Attribute.CHARISMA, 5,
-                Attribute.INTELLIGENCE, 3
-        ), 10);
+        TreeMap<Attribute, Integer> map = new TreeMap<>(); map.put(Attribute.AGILITY, 5);
+        map.put(Attribute.INTELLIGENCE, 3); map.put(Attribute.CHARISMA, 5);
+        cmdr = new Commander("LOGIN", "TheMind", map, 10);
     }
 
     @Test
@@ -51,7 +49,7 @@ class CommanderTest {
         cmdr.setRealName("Ryan Ward");
         assertEquals("Ryan Ward", cmdr.getRealName());
 
-        cmdr.setRealName("       ");
+        cmdr.setRealName("    \t   ");
         assertEquals(cmdr.getCommanderName(), cmdr.getRealName());
     }
 }

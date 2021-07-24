@@ -8,7 +8,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.*;
 
-// TODO: rewrite the mission part on the DB to support the Step, Ending and other new functionalities
+// TODO: rewrite the mission part on the DB to support the Step and other new functionalities
 
 /**
  * This class provides a Mission, made of one or multiple steps, and multiple endings.
@@ -38,6 +38,8 @@ public class Mission implements Comparable<Mission> {
         if (name == null || steps == null || attributeRequirements == null || issueDateTime == null || endings == null)
             throw new IllegalArgumentException("Null arguments for Mission constructor, aborting.");
         if (steps.size() == 0) throw new QuestException("La missione specificata non può avere 0 step.");
+        if (neededPoints < 0 || rewardPoints < 0)
+            throw new QuestException("I punti per l'accettazione e/o di ricompensa non possono essere negativi.");
 
         this.id = id;
         this.name = name;
@@ -228,7 +230,7 @@ public class Mission implements Comparable<Mission> {
      */
     public Mission addAttributeRequirement(Attribute attribute, int value) {
         if (attribute == null) throw new IllegalArgumentException("Attribute null, aborting.");
-        if (value < 0) throw new QuestException("Il valore per l'attributo da inserire non può essere negativo.");
+        if (value < 0) throw new QuestException("Il valore dell'attributo " + attribute + " non può essere negativo!");
         this.attributeRequirements.put(attribute, value); return this;
     }
 

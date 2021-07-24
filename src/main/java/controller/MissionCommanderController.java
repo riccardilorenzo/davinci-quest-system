@@ -23,6 +23,11 @@ import java.util.StringJoiner;
  */
 @SuppressWarnings("ClassCanBeRecord")
 public class MissionCommanderController {
+    /**
+     * Maximum amount of Attribute values (summed) the Commander can ever have (considering also Mission bonuses).
+     */
+    public static final int MAX_ATTRIBUTE_POINTS = Commander.MAX_ATTRIBUTE_BASE_POINTS + 15;
+
     private final Writer writer;
     private final Reader reader;
 
@@ -90,7 +95,8 @@ public class MissionCommanderController {
 
         // TODO: !!! status is only one for multiple, different, requirements: rethink this or use only one requirement for step
         for (Requirement req : m.getSteps().get(stepIndex).getRequirements()) {
-            // TODO: rethink the status object, as if made so, it would require one delivery only (one JSON object contains only one IG mission -> maybe concat?)
+            // TODO: !!! rethink the status object, as if made so, it would require one delivery only (one JSON object contains only one IG mission -> maybe concat?)
+            // TODO: !!! with the MarketRequirement made so, I can sell to Beagle Point instead of Atorii without any problem
             if (!req.isMet(status))
                 return new Outcome(false, "Non soddisfi il seguente requisito per il completamento dello Step: " + System.lineSeparator() + req);
         }
@@ -109,10 +115,19 @@ public class MissionCommanderController {
     private Outcome completeMission(Commander cmdr, Mission m) {
         // TODO: consider a random Ending influenced ALSO by attributes
         Optional<Ending> ending = m.getEndings().parallelStream().skip(new Random().nextInt(m.getEndings().size())).findFirst();
+        int numberOfAttributes = cmdr.getAttributes().values().parallelStream().mapToInt(Integer::valueOf).sum();
         if (ending.isPresent()) {
             for (Attribute attr : ending.get().getRewards().keySet()) {
-                int attrValue = cmdr.getAttributes().getOrDefault(attr, 0);
-                cmdr.setAttribute(attr, attrValue + ending.get().getRewards().get(attr));
+                int reward = ending.get().getRewards().get(attr);
+                if (numberOfAttributes + reward < MAX_ATTRIBUTE_POINTS) {
+                    int attrValue = cmdr.getAttributes().getOrDefault(attr, 0);
+                    cmdr.setAttribute(attr, attrValue + reward);
+                    numberOfAttributes += reward;
+                } else {
+                    cmdr.setAttribute(attr,
+                            MAX_ATTRIBUTE_POINTS - numberOfAttributes + cmdr.getAttributes().getOrDefault(attr, 0));
+                    break;
+                }
             }
         }
         try {

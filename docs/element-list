@@ -1,6 +1,5 @@
 controller
 model
-model.attribute
 model.mission
 model.mission.requirement
 persistence

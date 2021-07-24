@@ -1,18 +1,21 @@
 package model;
 
-import java.util.Map;
+import java.util.SortedMap;
 import java.util.StringJoiner;
-
-// TODO: rewrite the commander-related tables in the DB to match this structure
 
 /**
  * This class is used to instantiate a Commander, which is used as a basic user model.
  * @author TheMind
  */
 public class Commander {
+	/**
+	 * Maximum amount of Attribute values (summed) the Commander can set himself.
+	 */
+	public static final int MAX_ATTRIBUTE_BASE_POINTS = Attribute.values().length * 5;
+
 	private final String login, commanderName;
 	private String realName;
-	private Map<Attribute, Integer> attributes;
+	private SortedMap<Attribute, Integer> attributes;
 	private int points;
 	private final boolean isAdmin;
 	
@@ -21,12 +24,12 @@ public class Commander {
 	 * @param login Login ID used for logging and referring to the commander.
 	 * @param commanderName Commander name as used in game.
 	 * @param realName "Real" GDR name, used for roleplay purposes.
-	 * @param attributes HashSet of Attribute, which stores the attributes of the commander.
+	 * @param attributes SortedMap of Attribute, which stores the attributes of the commander.
 	 * @param points Points the Commander has.
 	 * @param isAdmin Whether this Commander has admin privileges or not.
 	 */
 	public Commander(String login, String commanderName, String realName,
-			Map<Attribute, Integer> attributes, int points, boolean isAdmin) {
+			SortedMap<Attribute, Integer> attributes, int points, boolean isAdmin) {
 		if (login == null || commanderName == null || attributes == null || realName == null)
 			throw new IllegalArgumentException("Argomenti null, impossibile proseguire.");
 		
@@ -42,11 +45,11 @@ public class Commander {
 	 * Secondary constructor for Commander class, without the real name.
 	 * @param login Login ID used for logging and referring to the commander.
 	 * @param commanderName Commander name as used in game.
-	 * @param attributes HashSet of Attribute, which stores the attributes of the commander.
+	 * @param attributes SortedMap of Attribute, which stores the attributes of the commander.
 	 * @param points Points the Commander has.
 	 * @param isAdmin Whether this Commander has admin privileges or not.
 	 */
-	public Commander(String login, String commanderName, Map<Attribute, Integer> attributes,
+	public Commander(String login, String commanderName, SortedMap<Attribute, Integer> attributes,
 			int points, boolean isAdmin) {
 		this(login, commanderName, commanderName, attributes, points, isAdmin);
 	}
@@ -55,10 +58,10 @@ public class Commander {
 	 * Secondary constructor for Commander class, without the real name.
 	 * @param login Login ID used for logging and referring to the commander.
 	 * @param commanderName Commander name as used in game.
-	 * @param attributes HashSet of Attribute, which stores the attributes of the commander.
+	 * @param attributes SortedMap of Attribute, which stores the attributes of the commander.
 	 * @param points Points the Commander has.
 	 */
-	public Commander(String login, String commanderName, Map<Attribute, Integer> attributes,
+	public Commander(String login, String commanderName, SortedMap<Attribute, Integer> attributes,
 			int points) {
 		this(login, commanderName, commanderName, attributes, points, false);
 	}
@@ -96,8 +99,7 @@ public class Commander {
 	}
 
 	private String changeEmpty(String str) {
-		if (str == null) throw new IllegalArgumentException("Real name null, aborting.");
-		if (str.trim().isBlank()) return this.getCommanderName();
+		if (str == null || str.trim().isBlank()) return this.getCommanderName();
 		return str.trim();
 	}
 
@@ -105,7 +107,7 @@ public class Commander {
 	 * Getter method for the attributes.
 	 * @return A Map containing all the attributes of the Commander.
 	 */
-	public Map<Attribute, Integer> getAttributes() {
+	public SortedMap<Attribute, Integer> getAttributes() {
 		return attributes;
 	}
 

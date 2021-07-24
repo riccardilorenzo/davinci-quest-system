@@ -10,6 +10,7 @@ public class Step {
     private String desc;
     @SuppressWarnings("FieldMayBeFinal")
     private List<Requirement> requirements;
+    // TODO: implement Step requirements in the DB (maybe rethink them as only one requirement for Step --> See other TODOs)
 
     public Step(int idMission, String desc, List<Requirement> requirements) {
         if (desc == null || requirements == null) throw new IllegalArgumentException("Description null, aborting.");
@@ -32,7 +33,7 @@ public class Step {
      * Getter method for the mission ID.
      * @return The Mission ID this Step is relative to.
      */
-    public int getIdMission() {
+    public int getMissionId() {
         return this.idMission;
     }
 
@@ -42,7 +43,7 @@ public class Step {
      */
     public void setDesc(String desc) {
         if (desc == null) throw new IllegalArgumentException("Description null, aborting.");
-        this.desc = desc;
+        this.desc = desc.trim();
     }
 
     /**
@@ -56,18 +57,19 @@ public class Step {
     /**
      * Auxiliary method to add a Requirement for this Step.
      * @param req The new Requirement.
-     * @return The List of Requirement(s) with the element eventually added.
+     * @return This Step (supports pattern cascading).
      */
-    public List<Requirement> addRequirement(Requirement req) {
-        this.requirements.add(req); return this.requirements;
+    public Step addRequirement(Requirement req) {
+        this.requirements.add(req); return this;
     }
 
     /**
      * Auxiliary method to remove a Requirement for this Step.
      * @param req The Requirement to be removed.
-     * @return The List of Requirement(s) with the element eventually removed.
+     * @return This Step (supports pattern cascading).
      */
-    public List<Requirement> removeRequirement(Requirement req) {
-        this.requirements.remove(req); return this.requirements;
+    public Step removeRequirement(Requirement req) {
+        // TODO: missing equals() in Requirement (implementing classes)
+        this.requirements.remove(req); return this;
     }
 }

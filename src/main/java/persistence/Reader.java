@@ -6,6 +6,7 @@ import model.mission.Mission;
 import model.mission.MissionStatus;
 import model.mission.Step;
 
+import java.util.List;
 import java.util.SortedSet;
 
 public interface Reader {
@@ -43,14 +44,22 @@ public interface Reader {
      */
     MissionStatus readMissionStatus(Commander cmdr, Mission mission) throws BadDataFormatException;
 
-    /**
+    /*/**
      * Reads a Step related to the given Mission and Commander, from the specified source.
      * @param cmdr The Commander whose Step belongs to.
      * @param mission The Mission whose Step belongs to.
      * @return The Step read.
      * @throws BadDataFormatException In case of errors in I/O, or bad data format.
      */
-    Step readStep(Commander cmdr, Mission mission) throws BadDataFormatException;
+    //Step readStep(Commander cmdr, Mission mission) throws BadDataFormatException; // Uses readLastStepIndex internally, then uses that index on cmdr
+
+    /**
+     * Reads the List of Step(s) related to the given Mission, from the specified source.
+     * @param missionId The Mission these Step(s) belong to.
+     * @return The Step(s) read, in a List.
+     * @throws BadDataFormatException In case of errors in I/O, or bad data format.
+     */
+    List<Step> readSteps(int missionId) throws BadDataFormatException;
 
     /**
      * Reads the last Step index related to the given Mission and Commander, from the specified source.
@@ -63,10 +72,26 @@ public interface Reader {
 
     /**
      * Reads all the Endings from the provided source.
-     * @return The Set containing every possible ending.
+     * @return The SortedSet containing every possible ending, not null.
      * @throws BadDataFormatException In case of errors in I/O, or bad data format.
      */
     SortedSet<Ending> readEndings() throws BadDataFormatException;
+
+    /**
+     * Reads all the Endings from the provided source, relative to the given Mission.
+     * @param m The Mission the Ending(s) belong to.
+     * @return The SortedSet containing every ending relative to the mission, not null.
+     * @throws BadDataFormatException In case of errors in I/O, or bad data format.
+     */
+    SortedSet<Ending> readEndings(Mission m) throws BadDataFormatException;
+
+    /**
+     * Reads all the Endings from the provided source, relative to the given Mission.
+     * @param missionId The Mission ID the Ending(s) belong to.
+     * @return The SortedSet containing the ending with the given ID, not null.
+     * @throws BadDataFormatException In case of errors in I/O, or bad data format.
+     */
+    SortedSet<Ending> readEndings(int missionId) throws BadDataFormatException;
 
     /**
      * Reads a specified Ending from the provided source.

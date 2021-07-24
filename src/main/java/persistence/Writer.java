@@ -60,15 +60,6 @@ public interface Writer {
     void updateMissionStepIndex(Commander cmdr, Mission mission, int step) throws WriterException;
 
     /**
-     * Updates a Step at the specified destination, relative to the given Commander and Mission.
-     * @param cmdr The Commander whose Step belongs to.
-     * @param mission The Mission whose Step belongs to.
-     * @param step The new Step.
-     * @throws WriterException In case of errors in I/O, or bad data format.
-     */
-    void updateMissionStep(Commander cmdr, Mission mission, Step step) throws WriterException;
-
-    /**
      * Creates an Ending at the specified destination.
      * @param ending The Ending to create.
      * @throws WriterException In case of errors in I/O, or bad data format.
@@ -89,6 +80,14 @@ public interface Writer {
      * @throws WriterException In case of errors in I/O, or bad data format.
      */
     void createStep(Mission mission, Step step) throws WriterException;
+
+    /**
+     * Updates a Step at the specified destination, relative to the given Commander and Mission.
+     * @param mission The Mission whose Step belongs to.
+     * @param step The new Step.
+     * @throws WriterException In case of errors in I/O, or bad data format.
+     */
+    void updateStep(Mission mission, Step step) throws WriterException;
 
     /**
      * Updates an Ending at the specified destination.
