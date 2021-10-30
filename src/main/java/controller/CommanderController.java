@@ -9,7 +9,6 @@ import persistence.WriterException;
 
 /**
  * Provides a controller for commanders, which interfaces with the DB.
- * @author TheMind
  */
 public class CommanderController {
     private Reader reader;
