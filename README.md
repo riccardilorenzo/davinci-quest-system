@@ -12,7 +12,7 @@ The structure tries to follow the MVC pattern:
 </ul>
 
 Moreover, there is a ServletUtils class which is used to store some useful constants, such as connection string.
-Finally, the persistence provides two interfaces: one for the Reader, and the other for the Writer. There is an implementation for both, too: DatabaseReader and DatabaseWriter.
+Finally, the <b>persistence</b> provides two interfaces: one for the Reader, and the other for the Writer. There is an implementation, too: DatabaseReader and DatabaseWriter, based both on PostgreSQL.
 
 <h2>Final notes</h2>
 <p>This project is still very Work In Progress, and therefore subject to significant changes in the future. Some parts still need to be written.
