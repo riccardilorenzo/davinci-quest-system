@@ -14,6 +14,9 @@ The structure tries to follow the MVC pattern:
 Moreover, there is a ServletUtils class which is used to store some useful constants, such as connection string.
 Finally, the <b>persistence</b> provides two interfaces: one for the Reader, and the other for the Writer. There is an implementation, too: DatabaseReader and DatabaseWriter, based both on PostgreSQL.
 
+<h3>User ID Generation</h3>
+The User ID used for login is a randomly generated string of 16 characters given by a Discord Bot made in a separate project with NodeJS, and running on DaVinci Corporation's own Discord server.
+
 <h2>Final notes</h2>
 <p>This project is still very Work In Progress, and therefore subject to significant changes in the future. Some parts still need to be written.
 JavaDoc comments should be present in each method and class definition, so you will have a complete documentation just by creating it with a proper IDE.
