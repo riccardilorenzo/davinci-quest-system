@@ -19,7 +19,6 @@ import java.util.StringJoiner;
 
 /**
  * Provides a controller to link a Commander and its Mission(s), which interfaces with the DB.
- * @author TheMind
  */
 @SuppressWarnings("ClassCanBeRecord")
 public class MissionCommanderController {
